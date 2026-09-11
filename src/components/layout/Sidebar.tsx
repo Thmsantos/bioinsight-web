@@ -2,19 +2,13 @@ import { cn } from '@/utils/cn';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
-  History, 
   User, 
-  FileText, 
-  Settings, 
   LogOut 
 } from 'lucide-react';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', testId: 'nav-dashboard-link' },
-  { label: 'History', icon: History, path: '/history', testId: 'nav-history-link' },
   { label: 'Profile', icon: User, path: '/profile', testId: 'nav-profile-link' },
-  { label: 'Reports', icon: FileText, path: '/reports', testId: 'nav-reports-link' },
-  { label: 'Settings', icon: Settings, path: '/settings', testId: 'nav-settings-link' },
 ];
 
 function Sidebar() {
