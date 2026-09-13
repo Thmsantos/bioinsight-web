@@ -3,6 +3,7 @@ import type { ChangeEvent, SyntheticEvent } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { X, UploadCloud, FileText } from 'lucide-react';
+import { reportService } from '@/services/reportService';
 
 interface UploadPdfModalProps {
     isOpen: boolean;
@@ -38,8 +39,7 @@ function UploadPdfModal({ isOpen, onClose, onUploadSuccess }: UploadPdfModalProp
         setError(null);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-
+            await reportService.uploadPdf(selectedFile);
             setSelectedFile(null);
             onClose();
             if (onUploadSuccess) onUploadSuccess();
