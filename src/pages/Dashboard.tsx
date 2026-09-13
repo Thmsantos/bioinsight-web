@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +12,7 @@ import {
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import { KpiCard } from '@/components/dashboard/KpiCard';
+import { UploadPdfModal } from '@/components/dashboard/UploadPdfModal';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Upload } from 'lucide-react';
@@ -27,6 +29,8 @@ ChartJS.register(
 );
 
 function Dashboard() {
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
   const lineChartData = {
     labels: ['Dec 15', 'Dec 22', 'Sep 10', 'Dec 14', 'Nov 15', 'Dec 25'],
     datasets: [
@@ -144,12 +148,18 @@ function Dashboard() {
       <div className="flex justify-center py-2">
         <Button
           data-testid="upload-pdf-trigger-btn"
+          onClick={() => setIsUploadModalOpen(true)}
           className="w-full max-w-md bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 py-3 text-base shadow-md"
         >
           <Upload className="mr-2 h-5 w-5" />
           + Upload New InBody PDF
         </Button>
       </div>
+
+      <UploadPdfModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+      />
     </div>
   );
 }
