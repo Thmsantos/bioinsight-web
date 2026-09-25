@@ -18,7 +18,7 @@ interface Insight {
 
 interface User {
   _id: string;
-  name: string;
+  password: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
