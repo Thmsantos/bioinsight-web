@@ -3,13 +3,22 @@ import type { User } from '@/types';
 
 export interface LoginResponse {
     token: string;
-    user: User;
+    user: Omit<User, 'password'>;
 }
 
 const authService = {
     async login(email: string, password: string): Promise<LoginResponse | null> {
-        const response = await api.post<LoginResponse>('/login', { email, password });
-        return response.data.token ? response.data : null;
+        try {
+            const response = await api.post<LoginResponse>('/auth/authenticate', {
+                email,
+                password
+            });
+            
+            return response.data.token ? response.data : null;
+        } catch (error) {
+            console.error(error)
+            return null;
+        }
     },
 
     logout(): void {
