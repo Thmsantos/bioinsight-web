@@ -1,9 +1,11 @@
 import { api } from '@/config/api';
-import type { User } from '@/types';
+import type { UserWithoutPassword } from '@/types';
+import { storage } from '@/utils/storage';
+import { useNavigate } from 'react-router-dom';
 
 export interface LoginResponse {
     token: string;
-    user: Omit<User, 'password'>;
+    user: UserWithoutPassword;
 }
 
 const authService = {
@@ -13,7 +15,12 @@ const authService = {
                 email,
                 password
             });
-            
+
+            if (response.data.token) {
+                storage.set<string>('token', response.data.token);
+                storage.set<UserWithoutPassword>('user', response.data.user);
+            }
+
             return response.data.token ? response.data : null;
         } catch (error) {
             console.error(error)
@@ -22,11 +29,14 @@ const authService = {
     },
 
     logout(): void {
-        window.location.href = '/login';
+        const navigate = useNavigate();
+        navigate('/login');
+        storage.remove('token')
+        storage.remove('user')
     },
 
     getToken(): string | null {
-        return 'token';
+        return storage.get<string>('token');
     },
 };
 

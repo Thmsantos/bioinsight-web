@@ -1,19 +1,19 @@
 interface Insight {
-    _id: string;
-    basalRate: number;
-    bmi: number;
-    date: string;
-    fatMass: number;
-    fatPercentage: number;
-    filename: string;
-    visceralFat: number;
-    protein: number;
-    userId: string;
-    water: number;
-    waistAndHips: number;
-    weight: number;
-    createdAt: Date;
-    updatedAt: Date;
+  _id: string;
+  basalRate: number;
+  bmi: number;
+  date: string;
+  fatMass: number;
+  fatPercentage: number;
+  filename: string;
+  visceralFat: number;
+  protein: number;
+  userId: string;
+  water: number;
+  waistAndHips: number;
+  weight: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface User {
@@ -24,4 +24,6 @@ interface User {
   updatedAt: Date;
 }
 
-export type { Insight, User }
+interface UserWithoutPassword extends Omit<User, 'password'> { }
+
+export type { Insight, User, UserWithoutPassword }
