@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
@@ -11,16 +11,16 @@ function Login() {
   const [password, setPassword] = React.useState<string>();
   const [loading, setLoading] = React.useState(false);
 
-  async function handleLogin(email?: string, password?: string){
-    if(!email || !password){
+  async function handleLogin(email?: string, password?: string) {
+    if (!email || !password) {
       alert('Fill all fields!')
       return;
     }
     setLoading(true);
 
     const response = await authService.login(email, password)
-      
-    if(response){
+
+    if (response) {
       navigate('/dashboard');
     } else {
       alert('Invalid credentials!')
@@ -38,32 +38,42 @@ function Login() {
         </div>
 
         <form className="space-y-4">
-          <Input 
-            id="email" 
-            type="email" 
-            label="Email Address" 
-            placeholder="Email Address" 
-            data-testid="login-email-input" 
+          <Input
+            id="email"
+            type="email"
+            label="Email Address"
+            placeholder="Email Address"
+            data-testid="login-email-input"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Input 
-            id="password" 
-            type="password" 
-            label="Password" 
-            placeholder="Password" 
+          <Input
+            id="password"
+            type="password"
+            label="Password"
+            placeholder="Password"
             data-testid="login-password-input"
-            onChange={(e) => setPassword(e.target.value)} 
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <Button 
-            type="submit" 
-            data-testid="login-submit-btn" 
+          <Button
+            type="submit"
+            data-testid="login-submit-btn"
             className="w-full"
             onClick={async () => await handleLogin(email!, password!)}
             isLoading={loading}
           >
             Sign In
           </Button>
+          <div className="pt-2 text-center text-sm text-slate-600">
+            Don't have an account?{' '}
+            <Link
+              to="/register"
+              data-testid="register-link"
+              className="font-medium text-brand-600 hover:text-brand-700 hover:underline"
+            >
+              Sign up
+            </Link>
+          </div>
         </form>
       </Card>
     </div>

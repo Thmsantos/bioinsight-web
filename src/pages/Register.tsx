@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import React from 'react';
 import { registerService } from '@/services/registerService';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Register() {
   const navigate = useNavigate();
@@ -11,16 +11,16 @@ function Register() {
   const [password, setPassword] = React.useState<string>();
   const [loading, setLoading] = React.useState(false);
 
-  async function handleRegister(email?: string, password?: string){
-    if(!email || !password){
+  async function handleRegister(email?: string, password?: string) {
+    if (!email || !password) {
       alert('Fill all fields!')
       return;
     }
     setLoading(true);
 
     const response = await registerService.register(email, password)
-      
-    if(response){
+
+    if (response) {
       navigate('/login');
     } else {
       alert('Error creating user!')
@@ -38,32 +38,42 @@ function Register() {
         </div>
 
         <form className="space-y-4">
-          <Input 
-            id="email" 
-            type="email" 
-            label="Email Address" 
-            placeholder="Email Address" 
-            data-testid="register-email-input" 
+          <Input
+            id="email"
+            type="email"
+            label="Email Address"
+            placeholder="Email Address"
+            data-testid="register-email-input"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Input 
-            id="password" 
-            type="password" 
-            label="Password" 
-            placeholder="Password" 
+          <Input
+            id="password"
+            type="password"
+            label="Password"
+            placeholder="Password"
             data-testid="register-password-input"
-            onChange={(e) => setPassword(e.target.value)} 
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <Button 
-            type="submit" 
-            data-testid="register-submit-btn" 
+          <Button
+            type="submit"
+            data-testid="register-submit-btn"
             className="w-full"
             onClick={async () => await handleRegister(email!, password!)}
             isLoading={loading}
           >
             Create
           </Button>
+          <div className="pt-2 text-center text-sm text-slate-600">
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              data-testid="login-link"
+              className="font-medium text-brand-600 hover:text-brand-700 hover:underline"
+            >
+              Sign in
+            </Link>
+          </div>
         </form>
       </Card>
     </div>
