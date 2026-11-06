@@ -18,8 +18,8 @@ function UploadPdfModal({ isOpen, onClose, onUploadSuccess }: UploadPdfModalProp
 
     if (!isOpen) return null;
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] as File;
         if (file) {
             if (file.type !== 'application/pdf') {
                 setError('Por favor, selecione apenas arquivos no formato PDF.');
@@ -29,6 +29,8 @@ function UploadPdfModal({ isOpen, onClose, onUploadSuccess }: UploadPdfModalProp
             setError(null);
             setSelectedFile(file);
         }
+        const insight = await reportService.uploadPdf(file);
+        return insight;
     };
 
     const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
