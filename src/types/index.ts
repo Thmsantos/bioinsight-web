@@ -24,6 +24,6 @@ interface User {
   updatedAt: Date;
 }
 
-interface UserWithoutPassword extends Omit<User, 'password'> { }
+type UserWithoutPassword = Omit<User, 'password'>;
 
 export type { Insight, User, UserWithoutPassword }
