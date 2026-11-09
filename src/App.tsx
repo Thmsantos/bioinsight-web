@@ -4,6 +4,7 @@ import { Dashboard } from '@/pages/Dashboard';
 import { Login } from '@/pages/Login';
 import { Profile } from '@/pages/Profile';
 import { Register } from './pages/Register';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function App() {
   return (
@@ -12,13 +13,15 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
 
-          <Route path="/history" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/reports" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/settings" element={<Navigate to="/profile" replace />} />
+            <Route path="/history" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/reports" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/settings" element={<Navigate to="/profile" replace />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
