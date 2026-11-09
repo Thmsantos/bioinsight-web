@@ -33,6 +33,6 @@ export const reportService = {
     },
 
     async deleteReport(id: string): Promise<void> {
-        await api.delete(`/insights/${id}`);
+        await api.delete(`/insight/${id}`);
     },
 };

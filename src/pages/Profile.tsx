@@ -11,6 +11,10 @@ export function Profile() {
   const [reports, setReports] = useState<Insight[]>([]);
   const user = storage.get<UserWithoutPassword>('user');
 
+  function deleteReport(id: string): void {
+    reportService.deleteReport(id);
+  }
+
   useEffect(() => {
     let isMounted = true;
 
@@ -135,6 +139,7 @@ export function Profile() {
                         data-testid={`delete-report-btn-${report.filename}`}
                         className="p-1.5 text-slate-500 hover:text-red-600 transition-colors"
                         title="Delete"
+                        onClick={() => deleteReport(report._id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
