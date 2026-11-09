@@ -1,10 +1,11 @@
 import { cn } from '@/utils/cn';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   User, 
   LogOut 
 } from 'lucide-react';
+import { storage } from '@/utils/storage';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', testId: 'nav-dashboard-link' },
@@ -12,6 +13,12 @@ const navItems = [
 ];
 
 function Sidebar() {
+  const navigate = useNavigate();
+  function logout(){
+    storage.clear();
+    navigate('/login');
+  };
+
   return (
     <aside 
       data-testid="main-sidebar"
@@ -53,7 +60,7 @@ function Sidebar() {
       <div className="border-t border-slate-200 pt-4">
         <button
           data-testid="logout-btn"
-          onClick={() => { window.location.href = '/login' }}
+          onClick={logout}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-red-50 hover:text-red-600"
         >
           <LogOut className="h-5 w-5" />
