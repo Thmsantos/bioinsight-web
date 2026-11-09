@@ -1,26 +1,35 @@
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Download, Trash2, KeyRound } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { reportService } from '@/services/reportService';
+import type { Insight, UserWithoutPassword } from '@/types';
+import { storage } from '@/utils/storage';
 
 export function Profile() {
-  const reports = [
-    {
-      id: '1',
-      name: 'InBody_Nov2023.pdf',
-      date: 'Nov 20, 2023',
-      size: '2.5 MB',
-      status: 'Completed' as const,
-    },
-    {
-      id: '2',
-      name: 'InBody_Aug2023.pdf',
-      date: 'Aug 15, 2023',
-      size: '1.8 MB',
-      status: 'Completed' as const,
-    },
-  ];
+  const [reports, setReports] = useState<Insight[]>([]);
+  const user = storage.get<UserWithoutPassword>('user');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadReports = async () => {
+      try {
+        const data = await reportService.getInsights();
+        if (!isMounted) return;
+        
+        setReports(data);
+      } catch (error) {
+        if (isMounted) console.error('Failed to load insights:', error);
+      }
+    };
+
+    loadReports();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div data-testid="profile-page" className="max-w-5xl space-y-8">
@@ -38,14 +47,14 @@ export function Profile() {
             <Input
               id="name"
               label="Name"
-              defaultValue="John Doe"
+              defaultValue={user?.email.split('@')[0]}
               data-testid="profile-name-input"
             />
             <Input
               id="email"
               type="email"
               label="Email"
-              defaultValue="johndoe@email.com"
+              defaultValue={user?.email}
               data-testid="profile-email-input"
             />
           </div>
@@ -71,13 +80,6 @@ export function Profile() {
                 Change Password
               </Button>
             </div>
-
-            <Input
-              id="location"
-              label="Location"
-              defaultValue="New York, USA"
-              data-testid="profile-location-input"
-            />
           </div>
 
           <div className="flex justify-end pt-2">
@@ -107,40 +109,30 @@ export function Profile() {
               <tr>
                 <th className="px-4 py-3">Report Name</th>
                 <th className="px-4 py-3">Date Uploaded</th>
-                <th className="px-4 py-3">File Size</th>
-                <th className="px-4 py-3">Analysis Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
               {reports.map((report) => (
                 <tr
-                  key={report.id}
-                  data-testid={`report-row-${report.id}`}
+                  key={report.filename}
+                  data-testid={`report-row-${report.filename}`}
                   className="hover:bg-slate-50/50"
                 >
                   <td className="px-4 py-3 font-medium text-slate-900">
-                    {report.name}
+                    {report.filename}
                   </td>
                   <td className="px-4 py-3">{report.date}</td>
-                  <td className="px-4 py-3">{report.size}</td>
-                  <td className="px-4 py-3">
-                    <StatusBadge
-                      status={report.status}
-                      testId={`report-status-${report.id}`}
-                    />
-                  </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-2">
                       <button
-                        data-testid={`download-report-btn-${report.id}`}
+                        data-testid={`download-report-btn-${report.filename}`}
                         className="p-1.5 text-slate-500 hover:text-brand-600 transition-colors"
                         title="Download"
                       >
                         <Download className="h-4 w-4" />
                       </button>
                       <button
-                        data-testid={`delete-report-btn-${report.id}`}
+                        data-testid={`delete-report-btn-${report.filename}`}
                         className="p-1.5 text-slate-500 hover:text-red-600 transition-colors"
                         title="Delete"
                       >
