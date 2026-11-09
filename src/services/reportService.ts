@@ -2,10 +2,18 @@ import { api } from '@/config/api';
 import type { Insight, UserWithoutPassword } from '@/types';
 import { storage } from '@/utils/storage';
 
+interface GetInsightsResponse {
+  statusCode: number;
+  data: Insight[];
+}
+
 export const reportService = {
     async getInsights(): Promise<Insight[]> {
-        const response = await api.get<Insight[]>('/insights');
-        return response.data;
+    const user = storage.get<UserWithoutPassword>('user');
+    if (!user?._id) return [];
+    
+    const response = await api.get<GetInsightsResponse>(`/insight/${user._id}`);
+    return response.data.data || [];
     },
 
     async uploadPdf(file: File): Promise<Insight> {
