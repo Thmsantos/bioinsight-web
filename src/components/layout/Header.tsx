@@ -1,6 +1,11 @@
+import type { UserWithoutPassword } from '@/types';
+import { storage } from '@/utils/storage';
 import { Bell, Search } from 'lucide-react';
 
 export function Header() {
+  const email = storage.get<UserWithoutPassword>('user')?.email;
+  const abbreviation = `${email?.split('')[0]}${email?.split('')[1]}`.toUpperCase();
+
   return (
     <header 
       data-testid="main-header"
@@ -28,7 +33,7 @@ export function Header() {
           data-testid="user-avatar"
           className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold text-slate-700"
         >
-          JD
+          {abbreviation}
         </div>
       </div>
     </header>
