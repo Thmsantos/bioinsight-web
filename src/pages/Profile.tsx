@@ -9,10 +9,31 @@ import { storage } from '@/utils/storage';
 
 export function Profile() {
   const [reports, setReports] = useState<Insight[]>([]);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isDownloading, setIsDownloading] = useState<string | null>(null);
   const user = storage.get<UserWithoutPassword>('user');
 
-  function deleteReport(id: string): void {
-    reportService.deleteReport(id);
+  async function handleDeleteReport(id: string) {
+    try {
+      setIsDeleting(id);
+      await reportService.deleteReport(id);
+      setReports((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      console.error('Failed to delete report:', error);
+    } finally {
+      setIsDeleting(null);
+    }
+  }
+
+  async function handleDownloadReport(filename: string) {
+    try {
+      setIsDownloading(filename);
+      await reportService.downloadReport(filename);
+    } catch (error) {
+      console.error('Failed to download report:', error);
+    } finally {
+      setIsDownloading(null);
+    }
   }
 
   useEffect(() => {
@@ -113,12 +134,13 @@ export function Profile() {
               <tr>
                 <th className="px-4 py-3">Report Name</th>
                 <th className="px-4 py-3">Date Uploaded</th>
+                <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
               {reports.map((report) => (
                 <tr
-                  key={report.filename}
+                  key={report._id || report.filename}
                   data-testid={`report-row-${report.filename}`}
                   className="hover:bg-slate-50/50"
                 >
@@ -130,16 +152,19 @@ export function Profile() {
                     <div className="flex justify-end gap-2">
                       <button
                         data-testid={`download-report-btn-${report.filename}`}
-                        className="p-1.5 text-slate-500 hover:text-brand-600 transition-colors"
+                        className="p-1.5 text-slate-500 hover:text-brand-600 transition-colors disabled:opacity-50"
                         title="Download"
+                        disabled={isDownloading === report.filename}
+                        onClick={() => handleDownloadReport(report.filename)}
                       >
                         <Download className="h-4 w-4" />
                       </button>
                       <button
                         data-testid={`delete-report-btn-${report.filename}`}
-                        className="p-1.5 text-slate-500 hover:text-red-600 transition-colors"
+                        className="p-1.5 text-slate-500 hover:text-red-600 transition-colors disabled:opacity-50"
                         title="Delete"
-                        onClick={() => deleteReport(report._id)}
+                        disabled={isDeleting === report._id}
+                        onClick={() => handleDeleteReport(report._id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

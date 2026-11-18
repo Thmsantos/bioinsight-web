@@ -9,11 +9,30 @@ interface GetInsightsResponse {
 
 export const reportService = {
     async getInsights(): Promise<Insight[]> {
-    const user = storage.get<UserWithoutPassword>('user');
-    if (!user?._id) return [];
-    
-    const response = await api.get<GetInsightsResponse>(`/insight/${user._id}`);
-    return response.data.data || [];
+        const user = storage.get<UserWithoutPassword>('user');
+        if (!user?._id) return [];
+        
+        const response = await api.get<GetInsightsResponse>(`/insight/${user._id}`);
+        return response.data.data || [];
+    },
+
+    async downloadReport(filename: string): Promise<void> {
+        const formData = new FormData();
+        formData.append('filename', filename);
+
+        const response = await api.post(`/insight/download`, formData, {
+            responseType: 'blob',
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename); 
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode?.removeChild(link);
+        window.URL.revokeObjectURL(url);
     },
 
     async uploadPdf(file: File): Promise<Insight> {
